@@ -1,0 +1,9 @@
+Unit,Maintainance,Stab_multi,Manpower
+sol,100,0.3,10
+arch,200,0.2,10
+cav,400,0.3,30
+art,1000,0.1,80
+con,0,0,10
+ligh,2000,0.05,50
+heav,15000,0,100
+bord,500,0.1,10

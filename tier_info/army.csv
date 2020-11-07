@@ -1,0 +1,9 @@
+Unit,health,damage,morale,morale_damage
+sol,100,75,10,10
+arch,50,30,25,15
+cav,50,80,30,60
+art,20,15,50,45
+con,10,10,10,10
+ligh,10,10,10,10
+heav,10,10,10,10
+bord,10,10,10,10
