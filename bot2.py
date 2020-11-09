@@ -272,8 +272,8 @@ async def change_division(ctx, typ, name, *, kwarg):
     else:
         await ctx.send("You have no country")
         return None
-    if typ.lower() == "add":
-        await ctx.send(all_country[checked[1]].add_division(name, kwarg))
+    if typ.lower() in ["add", "change_template"]:
+        await ctx.send(all_country[checked[1]].change_division(typ, name, kwarg))
 
 ####
 
@@ -389,4 +389,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.cWmLhzzsLnC7woQnMMGEzlGZflU')
+client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.352CsMSKAh6TpdV5tZ-Dp-IV358')

@@ -35,7 +35,7 @@ class Army:
     def return_max_cost(self):
         all = 0
         for cost in self.divisions.values():
-            all += cost.return_max_cost(stability)
+            all += cost.return_max_cost()
         return all
 
     def return_man(self):
@@ -56,8 +56,8 @@ class Army:
             "ligh": 0
         }
         for division in self.divisions.keys():
-            division = army.return_division(division)
-            for unit, amount in division["current"].items():
+            div = self.return_division(division)
+            for unit, amount in div["current"].items():
                 all[unit] += amount
         return all
     ####
@@ -76,7 +76,7 @@ class Army:
 
     # @division
     def return_division_cost(self, name, stability):
-        return self.divisions[name].return_cost(stablity)
+        return self.divisions[name].return_cost(stability)
 
     # @division
     def return_division_man(self, name):
@@ -95,15 +95,23 @@ class Army:
         else:
             return "No such template"
 
-    # @dicision
+    # @division
     def remove_division(self, name):
         del self.divisions[name]
         del self.templates_divisions[name]
         return "Task scuccesfull"
 
-    # @decision
+    # @division
     def change_division_force(self, name, **kwargs):
         return self.divisions[name].reinforce(kwargs)
+
+    # @division+template
+    def change_division_template(self, name, template_name):
+        if template_name in self.templates.keys():
+            self.templates_divisions[name] = template_name
+            return self.divisions[name].change_max(self.templates[template_name])
+        else:
+            return "No such tempalte"
 
     def fill_division(self, name):
         return self.division[name].reinforce_max()
@@ -119,7 +127,7 @@ class Army:
 
     # @template
     def return_template_cost(self, name, stability):
-        return Division(self.templates[template], self.templates[template].keys()).return_cost(stablity)
+        return Division(self.templates[template], self.templates[template].keys()).return_cost(stability)
 
     # @template
     def return_template_man(self, name):
@@ -184,8 +192,6 @@ class Division:
         self.level = 1
 
         self.costs = self.load("army_expenses")
-        print(self.costs)
-        print(lis)
         self.costs = self.change_tiers(lis, self.costs)
         self.powers = self.load("army")
         self.powers = self.change_tiers(lis, self.powers)
@@ -235,8 +241,6 @@ class Division:
         else:
             force = self.max_force
         self.base_cost = 0
-        print(force.keys())
-        print(self.costs.keys())
         for unit in force.keys():
             self.base_cost += force[unit]*self.costs[unit]["maintainance"]
 
@@ -249,24 +253,28 @@ class Division:
         for unit in force.keys():
             self.base_man += force[unit]*self.costs[unit]["manpower"]
 
-    def over_cost_calc(self, stablity, force):
+    def over_cost_calc(self, stability, force):
         if force == "current":
             force = self.current_force
         else:
             force = self.max_force
         self.over_cost = 0
         for unit in force.keys():
-            self.over_cost += force[unit]*self.costs[unit]["stab_multi"]*(100-stablity)
+            self.over_cost += force[unit]*self.costs[unit]["stab_multi"]*(100-stability)
     ####
 
     # Returning values
     def return_cost(self, stability):
-        self.update(stability)
+        self.update(stability=stability)
         return self.over_cost+self.base_cost
 
-    def return_max_cost(self, stability):
-        self.update(force="max", stability=stablity)
+    def return_max_cost(self):
+        self.update(force="max")
         return self.over_cost+self.base_cost
+
+    def return_man(self):
+        self.update()
+        return self.base_man
 
     def return_info(self):
         all = {}
@@ -282,7 +290,7 @@ class Division:
         return "Task succesfull"
 
     def reinforce_max(self):
-        self.current_force = self.max_force
+        self.current_force = copy.copy(self.max_force)
         return "Task succesfull"
 
     def change_max(self, new):
@@ -304,8 +312,6 @@ class Division:
                 rem.append(unit)
         for i in rem:
             del self.current_force[i]
-        print(self.current_force)
-        print(self.max_force)
         return "Task succesfull"
 
 

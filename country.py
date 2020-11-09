@@ -11,7 +11,7 @@ class Country:
         armies = [100, 50, 40, 10, 30, 5, 50]
         self.army.add_template("Deafult1", sol=armies[0],
                                cav=armies[1], arch=armies[2], con=armies[3])
-        self.army.add_template("Deafult1", ligh=armies[4], heav=armies[5], bord=armies[6])
+        self.army.add_template("Deafult2", ligh=armies[4], heav=armies[5], bord=armies[6])
 
         self.public = public
         self.spendings = {
@@ -138,7 +138,6 @@ class Country:
             else:
                 self.spendings[category] = value
         elif category == "name" and not(add):
-            print(value)
             self.name = value
         else:
             return "Invalid category"
@@ -193,9 +192,9 @@ class Country:
 
         if typ == "division":
             return_dic = {
-                "cost": self.army.divisions(self.army.return_division_cost, name, stability=self.stability.return_value()),
-                "man": self.army.divisions(self.army.return_division_man, name),
-                "template": self.army.divisions(self.army.return_division_template, name),
+                "cost": self.army.division(self.army.return_division_cost, name, stability=self.stability.return_value()),
+                "man": self.army.division(self.army.return_division_man, name),
+                "template": self.army.division(self.army.return_division_template, name),
                 "all": self.army.division(self.army.return_division, name)
             }
             if sub_type in return_dic:
@@ -218,8 +217,13 @@ class Country:
     def add_template(self, name, armies):
         return self.army.add_template(name, sol=armies[0], cav=armies[1], arch=armies[2], con=armies[3], ligh=armies[4], heav=armies[5], bord=armies[6])
 
-    def add_division(self, name, template):
-        return self.army.add_division(name, template)
+    def change_division(self, typ, name, template):
+        typ = typ.lower()
+
+        if typ == "add":
+            return self.army.add_division(name, template)
+        elif typ == "change_template":
+            return self.army.division(self.army.change_division_template, name, template_name=template)
 
 
 class Feature:
@@ -442,7 +446,6 @@ class Economy(Feature):
         self.side_modifier()
 
     def check_budget(self):
-        print(self.value)
         if self.value < 0:
             return True
         else:
