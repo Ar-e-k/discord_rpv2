@@ -159,7 +159,7 @@ async def all_countries(ctx):
 @client.command(brief=help_info["country_info"][0], description=help_info["country_info"][1])
 async def country_info(ctx, *, name):
     try:
-        text = all_country[nameself.templates7()].return_pub()
+        text = all_country[name].return_pub()
     except:
         await ctx.send("Invalid argument")
         return None
@@ -217,15 +217,15 @@ async def change_name(ctx,  *, value):
         pass
     else:
         await ctx.send("You have no country")
-    if valueself.templates7() == str(checked[1]).lower():
+    value = value.lower()
+    if value == str(checked[1]).lower():
         await ctx.send("Thats already your country name")
         return None
     channel = channels[str(checked[1]).lower()]
     for guild in client.guilds:
         for role in guild.roles:
-            if role.nameself.templates7() == str(checked[1]).lower():
+            if role.name == str(checked[1]).lower():
                 break
-    value = valueself.templates7()
     await role.edit(name=value)
     all_country[value] = all_country[checked[1]]
     channels[value] = channels[checked[1]]
@@ -274,7 +274,20 @@ async def change_division(ctx, typ, name, *, kwarg):
         return None
     if typ.lower() in ["add", "change_template"]:
         await ctx.send(all_country[checked[1]].change_division(typ, name, kwarg))
+    elif typ.lower() in ["reinforce_all", "reinforce"]:
+        await ctx.send(all_country[checked[1]].change_division(typ, name, kwarg))
 
+
+@client.command()
+async def change_template(ctx, typ, name, *, kwarg):
+    checked = check_country(ctx)
+    if checked[0]:
+        pass
+    else:
+        await ctx.send("You have no country")
+        return None
+    if typ.lower() in ["add"]:
+        await ctx.send(all_country[checked[1]].change_template(typ, name, kwarg))
 ####
 
 # Mod control
@@ -284,7 +297,7 @@ async def change_division(ctx, typ, name, *, kwarg):
 @coms.has_permissions(administrator=True)
 async def country_info_all(ctx, *, name):
     try:
-        all = all_country[nameself.templates7()].return_all()
+        all = all_country[name].return_all()
     except:
         await ctx.send("Invalid argument")
         return None
@@ -303,7 +316,7 @@ async def modify(ctx, source, value=None):
             pass
         else:
             continue
-        if country.clean_contentself.templates7() in all_country.keys():
+        if country.clean_content.lower() in all_country.keys():
             country = country.clean_content
             break
         else:
@@ -315,7 +328,7 @@ async def modify(ctx, source, value=None):
         await ctx.send("No value")
     else:
         pass
-    await ctx.send(all_country[countryself.templates7()].change(source, value, admin=True))
+    await ctx.send(all_country[country].change(source, value, admin=True))
 
 
 @client.command(brief=help_info["mod_add"][0], description=help_info["mod_add"][1])
@@ -328,11 +341,11 @@ async def mod_add(ctx, source, value=None):
             pass
         else:
             continue
-        if country.clean_contentself.templates7() in all_country.keys():
-            country = country.clean_content
+        if country.clean_content.lower() in all_country.keys():
+            country = country.clean_content.lower()
             break
         else:
-            if country.clean_contentself.templates7() == "stop":
+            if country.clean_content() == "stop":
                 return None
             else:
                 await ctx.send("Not a country")
@@ -340,19 +353,19 @@ async def mod_add(ctx, source, value=None):
         await ctx.send("No value")
     else:
         pass
-    await ctx.send(all_country[countryself.templates7()].change(source, value, admin=True, add=True))
+    await ctx.send(all_country[country].change(source, value, admin=True, add=True))
 
 
 @client.command(brief=help_info["update"][0], description=help_info["update"][1])
 @coms.has_permissions(administrator=True)
 async def update_all(ctx, *, country="None"):
-    country = countryself.templates7()
+    country = country.lower()
     if country == "none":
         for country in all_country.keys():
             func = all_country[country].update()
             await runner(func, channels[str(country).lower()])
     elif country in all_country.keys():
-        await runner(all_country[country].update(), channels[str(country).lower()])
+        await runner(all_country[country].update(), channels[country])
     else:
         await ctx.send("Invalid country")
         return None
@@ -389,4 +402,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.352CsMSKAh6TpdV5tZ-Dp-IV358')
+client.run('')

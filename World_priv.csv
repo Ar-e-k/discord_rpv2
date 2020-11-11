@@ -1,12 +1,12 @@
 State,Tax_rate,Budget,Population,Stability,Literacy,Economy_tier,Stability_mod,Literacy_mod,Form,Capital,Culture,Area,Trade
 Altafia,25,0,749923,60,20,Rural3,Tier7,Tier10,Kingdom,Witon,Altafian,28521,45
 Barsippia,30,0,410074,50,5,Rural2,Tier2,Tier10,Khaganate,Haudavikka,Inuk,29637,5
-Bockjorð,45,2000000,25992,50,3,Rural1,Tier1,Tier10,United Tribes,Wolsi,Wildlands,4626,20
+Bockjord,45,2000000,25992,50,3,Rural1,Tier1,Tier10,United Tribes,Wolsi,Wildlands,4626,20
 City of Bolrech,20,0,326745,70,18,Ind3,Tier8,Tier10,City-state,Bolrech,Altafian,16173,87
 Clifia,55,0,76264,50,1,Rural1,Tier9,Tier10,Khaganate,Dunter,Inuk,35946,2
-Fiskrbjoð,30,0,119448,50,8,Rural1,Tier1,Tier10,United Tribes,Tgotneset,Vikrock,13446,5
+Fiskrbjod,30,0,119448,50,8,Rural1,Tier1,Tier10,United Tribes,Tgotneset,Vikrock,13446,5
 Halrheimr,30,0,240955,50,6,Rural2,Tier1,Tier10,United Tribes,Hjaltadalr,Vikrock,36441,15
-Hamarrbjoð,30,0,78045,50,3,Rural1,Tier1,Tier10,United Tribes,Helgefaf,Vikrock,4419,0
+Hamarrbjod,30,0,78045,50,3,Rural1,Tier1,Tier10,United Tribes,Helgefaf,Vikrock,4419,0
 Horfieldia,30,0,58681,50,3,Rural1,Tier1,Tier10,United Tribes,Onvik,Vikrock,8577,5
 Kaldrland,45,2000000,21394,50,4,Rural1,Tier1,Tier10,United Tribes,Grof,Vikrock,7200,5
 Kemilinpia,60,0,1535340,38,1,Mix1,Tier3,Tier10,Kingdom,Presterbot,Komelian,443214,10
@@ -18,7 +18,7 @@ Parmuutiovi Confederation,15,0,1639467,50,5,Rural2,Tier4,Tier10,Confederation,Ke
 Republic of Durheimia,25,0,784580,70,12,Rural3,Tier7,Tier10,Republic,Bethom,Kipheimian,52164,30
 Seogjin Empire,30,0,5257243,30,6,Mix1,Tier1,Tier10,Empire,Chunhui,Guantzu,235467,50
 Seogjin Peoples Rebellion,70,75000000,1345752,30,1,Rural2,Tier1,Tier10,Republic,Manter,Guantzu,67311,5
-Snærjorð,32,75000,55591,50,3,Rural1,Tier1,Tier10,Tribes,Olarfug,Vikrock,24543,2
+Snaerjord,32,75000,55591,50,3,Rural1,Tier1,Tier10,Tribes,Olarfug,Vikrock,24543,2
 The Commonwealth of Utweiland,50,0,2663990,27,10,Rural2,Tier3,Tier10,Commonwealth,Hofland,Mixed,205844,10
 The Northern Horde,90,5000000,94363,80,4,Mix1,Tier8,Tier10,Horde,Soutbouton,Inuk,49896,0
 The Principality Bienalbia,15,0,1959475,50,16,Ind2,Tier9,Tier10,Principality,Cartajuruei,Bienian,109323,85

@@ -23,7 +23,7 @@ def init_countries(all, main):
     countries = {}
     for name in all:
         if main == True:
-            countries[name.lower()] = country.country_init(name, all[name], True)
+            countries[name.lower()] = country.country_init(name, all[name], test=True)
             break
         countries[name.lower()] = country.country_init(name, all[name])
     return countries

@@ -102,7 +102,7 @@ class Army:
         return "Task scuccesfull"
 
     # @division
-    def change_division_force(self, name, **kwargs):
+    def change_division_force(self, name, kwargs):
         return self.divisions[name].reinforce(kwargs)
 
     # @division+template
@@ -135,10 +135,10 @@ class Army:
     ####
 
     # Editing template details
-    def add_template(self, name, **kwargs):
+    def add_template(self, name, armies):
         if name not in self.templates.keys():
             lis = {}
-            for unit, num in kwargs.items():
+            for unit, num in armies.items():
                 if num != 0:
                     lis[unit] = num
             self.templates[name] = lis
@@ -155,14 +155,14 @@ class Army:
             return "Task succesfull"
 
     # @template
-    def update_template_add(self, name, **kwargs):
-        self.templates[name].update(kwargs)
+    def update_template_add(self, name, armies):
+        self.templates[name].update(armies)
         self.update_divisions(name)
         return "Task successfull"
 
     # @template
-    def update_template_change(self, name, **kwargs):
-        self.templates[name] = kwargs
+    def update_template_redefine(self, name, armies):
+        self.templates[name] = armies
         self.update_divisions(name)
         return "Task successfull"
 
@@ -242,7 +242,7 @@ class Division:
             force = self.max_force
         self.base_cost = 0
         for unit in force.keys():
-            self.base_cost += force[unit]*self.costs[unit]["maintainance"]
+            self.base_cost += int(force[unit])*self.costs[unit]["maintainance"]
 
     def base_manpower_calc(self, force):
         if force == "current":
@@ -251,7 +251,7 @@ class Division:
             force = self.max_force
         self.base_man = 0
         for unit in force.keys():
-            self.base_man += force[unit]*self.costs[unit]["manpower"]
+            self.base_man += int(force[unit])*self.costs[unit]["manpower"]
 
     def over_cost_calc(self, stability, force):
         if force == "current":
@@ -260,7 +260,7 @@ class Division:
             force = self.max_force
         self.over_cost = 0
         for unit in force.keys():
-            self.over_cost += force[unit]*self.costs[unit]["stab_multi"]*(100-stability)
+            self.over_cost += int(force[unit])*self.costs[unit]["stab_multi"]*(100-stability)
     ####
 
     # Returning values
@@ -287,10 +287,9 @@ class Division:
     def reinforce(self, unis):
         for unit in units.keys():
             self.current_force[unit] += kwargs[unit]
-        return "Task succesfull"
 
-    def reinforce_max(self):
-        self.current_force = copy.copy(self.max_force)
+        self.fix_overfill()
+
         return "Task succesfull"
 
     def change_max(self, new):
@@ -312,13 +311,21 @@ class Division:
                 rem.append(unit)
         for i in rem:
             del self.current_force[i]
+
+        self. fix_overfill()
+
         return "Task succesfull"
+
+    def fix_overfill(self):
+        for unit, amount in self.current_force.items():
+            if amount > self.max_force[unit]:
+                self.current_force[unit] = slef.max_force[unit]
 
 
 if __name__ == "__main__":
     army = Army()
 
-    print(army.add_template("defult1", sol=100, cav=20, arch=10, con=0))
+    print(army.add_template("defult1", {"sol": 100, "cav": 20, "arch": 10, "con": 0}))
     # print(army.return_template_names())
 
     # print(army.template(army.return_template, "defult1"))

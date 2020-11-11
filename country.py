@@ -8,10 +8,10 @@ class Country:
         self.name = name.lower()
 
         self.army = army.Army()
-        armies = [100, 50, 40, 10, 30, 5, 50]
-        self.army.add_template("Deafult1", sol=armies[0],
-                               cav=armies[1], arch=armies[2], con=armies[3])
-        self.army.add_template("Deafult2", ligh=armies[4], heav=armies[5], bord=armies[6])
+        armies = {"sol": 100, "cav": 50, "arch": 40, "con": 10, "art": 0, }
+        self.army.add_template("Deafult1", armies)
+        armies = {"ligh": 30, "heav": 5, "bord": 50}
+        self.army.add_template("Deafult2", armies)
 
         self.public = public
         self.spendings = {
@@ -214,8 +214,45 @@ class Country:
         else:
             return "Invalid type"
 
-    def add_template(self, name, armies):
-        return self.army.add_template(name, sol=armies[0], cav=armies[1], arch=armies[2], con=armies[3], ligh=armies[4], heav=armies[5], bord=armies[6])
+    def change_template(self, typ, name, army, sub_type="none"):
+        typ = typ.lower()
+
+        army_list = army.split(" ")
+        armies = {
+            "sol": 0,
+            "arch": 0,
+            "cav": 0,
+            "art": 0,
+            "con": 0,
+            "bord": 0,
+            "heav": 0,
+            "ligh": 0
+        }
+        rem = []
+
+        for unit in armies.keys():
+            try:
+                armies[unit] = army_list[army_list.index(unit)+1]
+            except ValueError:
+                rem.append(unit)
+
+        for i in rem:
+            del armies[i]
+
+        if typ == "add":
+            return self.army.add_template(name, armies)
+        elif typ == "update":
+
+            sub_type = sub_type.lower()
+
+            if sub_type == "add":
+                return self.army.template(self.army.update_template_add, name, armies=armies)
+            elif sub_type == "redo":
+                return self.army.template(self.army.update_template_redefine, name, armies=armies)
+            elif sub_type == "delete":
+                return self.army.template(self.army.update_template_delete, name, armies=armies)
+            else:
+                return "Inalid subtype"
 
     def change_division(self, typ, name, template):
         typ = typ.lower()
@@ -224,6 +261,9 @@ class Country:
             return self.army.add_division(name, template)
         elif typ == "change_template":
             return self.army.division(self.army.change_division_template, name, template_name=template)
+
+    def change_division_detail(self, typ, name, kwargs):
+        print(kwargs)
 
 
 class Feature:
@@ -481,11 +521,16 @@ def country_init(name, all, test=False):
     country_now = Country(name.upper(), stability, literacy, economy, population, public)
 
     if test:
-        pass
-        print(country_now.return_priv())
-        print(country_now.update())
-        #print(country_now.change("tax", 15.0))
+        print(country_now.change_template("add", "Deafult3", "sol 100 arch 1 cav 1"))
+        print(country_now.change_division("add", "div1", "Deafult3"))
+        print(country_now.return_division("division", "all", "div1"))
+        print(country_now.change_template("update", "Deafult3", "sol 10 arch 1 cav 1", sub_type="add"))
+        print(country_now.return_division("division", "all", "div1"))
         # print(country_now.return_priv())
-        #print(country_now.change("education_spending", 10.0))
-        print(country_now.return_priv())
+        # print(country_now.update())
+        # print(country_now.change("tax", 15.0))
+        # print(country_now.return_priv())
+        # print(country_now.change("education_spending", 10.0))
+        # print(country_now.return_priv())
+
     return country_now
