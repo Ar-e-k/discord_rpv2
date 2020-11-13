@@ -20,6 +20,7 @@ class Army:
 
     def template(self, func, name, **kwargs):
         if name in self.templates.keys():
+            print(kwargs)
             return func(name=name, **kwargs)
         else:
             return "Invalid template name"
@@ -58,7 +59,7 @@ class Army:
         for division in self.divisions.keys():
             div = self.return_division(division)
             for unit, amount in div["current"].items():
-                all[unit] += amount
+                all[unit] += int(amount)
         return all
     ####
 
@@ -85,6 +86,7 @@ class Army:
 
     # Editing division details
     def add_division(self, name, template):
+        name = name.lower()
         if not(name in self.divisions.keys()) and template in self.templates.keys():
             self.templates_divisions[name] = template
             self.divisions[name] = Division(
@@ -99,11 +101,11 @@ class Army:
     def remove_division(self, name):
         del self.divisions[name]
         del self.templates_divisions[name]
-        return "Task scuccesfull"
+        return "Division removed successfully"
 
     # @division
-    def change_division_force(self, name, kwargs):
-        return self.divisions[name].reinforce(kwargs)
+    def change_division_reinforce(self, name, armies):
+        return self.divisions[name].reinforce(armies)
 
     # @division+template
     def change_division_template(self, name, template_name):
@@ -112,9 +114,6 @@ class Army:
             return self.divisions[name].change_max(self.templates[template_name])
         else:
             return "No such tempalte"
-
-    def fill_division(self, name):
-        return self.division[name].reinforce_max()
     ####
 
     # Returning template details
@@ -127,15 +126,16 @@ class Army:
 
     # @template
     def return_template_cost(self, name, stability):
-        return Division(self.templates[template], self.templates[template].keys()).return_cost(stability)
+        return Division(self.templates[name], self.templates[name].keys()).return_cost(stability)
 
     # @template
     def return_template_man(self, name):
-        return Division(self.templates[template], self.templates[template].keys()).return_man()
+        return Division(self.templates[name], self.templates[name].keys()).return_man()
     ####
 
     # Editing template details
     def add_template(self, name, armies):
+        name = name.lower()
         if name not in self.templates.keys():
             lis = {}
             for unit, num in armies.items():
@@ -156,9 +156,13 @@ class Army:
 
     # @template
     def update_template_add(self, name, armies):
-        self.templates[name].update(armies)
+        for unit, num in armies.items():
+            if unit in self.templates[name]:
+                self.templates[name][unit] += int(num)
+            else:
+                self.templates[name][unit] = int(num)
         self.update_divisions(name)
-        return "Task successfull"
+        return "Template expanded successfully"
 
     # @template
     def update_template_redefine(self, name, armies):
@@ -167,10 +171,9 @@ class Army:
         return "Task successfull"
 
     # @template
-    def update_template_delete(self, name, args):
-        for unit in args():
-            del self.template[name][unit]
-        self.templates[name] = kwargs
+    def update_template_delete(self, name, armies):
+        for unit in armies.keys():
+            del self.templates[name][unit]
         self.update_divisions(name)
         return "Task successfull"
 
@@ -284,19 +287,19 @@ class Division:
     ####
 
     # Editing the division
-    def reinforce(self, unis):
+    def reinforce(self, units):
         for unit in units.keys():
-            self.current_force[unit] += kwargs[unit]
+            self.current_force[unit] += int(units[unit])
 
         self.fix_overfill()
 
-        return "Task succesfull"
+        return "Division reincorced successfully"
 
     def change_max(self, new):
 
         self.max_force = new
         for unit in self.max_force.keys():
-            num = self.max_force[unit]
+            num = int(self.max_force[unit])
             if unit in self.current_force.keys():
                 if self.current_force[unit] > num:
                     self.current_force[unit] = num
@@ -319,7 +322,7 @@ class Division:
     def fix_overfill(self):
         for unit, amount in self.current_force.items():
             if amount > self.max_force[unit]:
-                self.current_force[unit] = slef.max_force[unit]
+                self.current_force[unit] = self.max_force[unit]
 
 
 if __name__ == "__main__":

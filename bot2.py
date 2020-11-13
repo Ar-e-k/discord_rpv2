@@ -260,34 +260,36 @@ async def return_army(ctx, typ="whole", sub_type="none", *, name="none"):
         return None
     if typ.lower() == "whole":
         await ctx.send(all_country[checked[1]].return_army(sub_type))
-    else:
+    elif typ.lower() in ["division", "template"]:
         await ctx.send(all_country[checked[1]].return_division(typ, sub_type, name))
 
 
 @client.command()
-async def change_division(ctx, typ, name, *, kwarg):
+async def change_division(ctx, typ, name, *, kwarg="all"):
     checked = check_country(ctx)
     if checked[0]:
         pass
     else:
         await ctx.send("You have no country")
         return None
-    if typ.lower() in ["add", "change_template"]:
+    if typ.lower() in ["add", "change_template", "delete"]:
         await ctx.send(all_country[checked[1]].change_division(typ, name, kwarg))
     elif typ.lower() in ["reinforce_all", "reinforce"]:
-        await ctx.send(all_country[checked[1]].change_division(typ, name, kwarg))
+        await ctx.send(all_country[checked[1]].change_division_detail(typ, name, kwarg))
+    else:
+        await ctx.send("Invalid type")
 
 
 @client.command()
-async def change_template(ctx, typ, name, *, kwarg):
+async def change_template(ctx, typ, sub_type, name, *, kwarg):
     checked = check_country(ctx)
     if checked[0]:
         pass
     else:
         await ctx.send("You have no country")
         return None
-    if typ.lower() in ["add"]:
-        await ctx.send(all_country[checked[1]].change_template(typ, name, kwarg))
+    if typ.lower() in ["add", "update"]:
+        await ctx.send(all_country[checked[1]].change_template(typ, name, kwarg, sub_type=sub_type))
 ####
 
 # Mod control
@@ -402,4 +404,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('')
+client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.Y8L6__FGGTQQghIhY_IWu1qlG7U')

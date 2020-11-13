@@ -186,6 +186,7 @@ class Country:
             return self.army.return_all()
 
     def return_division(self, typ, sub_type, name):
+        print(name)
         typ = typ.lower()
         name = name.lower()
         sub_type = sub_type.lower()
@@ -216,7 +217,50 @@ class Country:
 
     def change_template(self, typ, name, army, sub_type="none"):
         typ = typ.lower()
+        name = name.lower()
 
+        armies = self.find_units(army)
+
+        if typ == "add":
+            return self.army.add_template(name, armies)
+        elif typ == "update":
+
+            sub_type = sub_type.lower()
+
+            if sub_type == "add":
+                return self.army.template(self.army.update_template_add, name, armies=armies)
+            elif sub_type == "redo":
+                return self.army.template(self.army.update_template_redefine, name, armies=armies)
+            elif sub_type == "delete":
+                print(army)
+                return self.army.template(self.army.update_template_delete, name, armies=armies)
+            else:
+                return "Invalid subtype"
+
+    def change_division(self, typ, name, template):
+        typ = typ.lower()
+        name = name.lower()
+        template = template.lower()
+
+        if typ == "add":
+            return self.army.add_division(name, template)
+        elif typ == "change_template":
+            return self.army.division(self.army.change_division_template, name, template_name=template)
+        elif typ == "delete":
+            return self.army.divions(self.remove_division, name)
+
+    def change_division_detail(self, typ, name, army):
+        typ = typ.lower()
+        name = name.lower()
+
+        if typ == "reinforce_all":
+            armies = self.army.division(self.army.return_division, name)["max"]
+        else:
+            armies = self.find_units(army)
+
+        return self.army.division(self.army.change_division_reinforce, name, armies=armies)
+
+    def find_units(self, army):
         army_list = army.split(" ")
         armies = {
             "sol": 0,
@@ -239,31 +283,7 @@ class Country:
         for i in rem:
             del armies[i]
 
-        if typ == "add":
-            return self.army.add_template(name, armies)
-        elif typ == "update":
-
-            sub_type = sub_type.lower()
-
-            if sub_type == "add":
-                return self.army.template(self.army.update_template_add, name, armies=armies)
-            elif sub_type == "redo":
-                return self.army.template(self.army.update_template_redefine, name, armies=armies)
-            elif sub_type == "delete":
-                return self.army.template(self.army.update_template_delete, name, armies=armies)
-            else:
-                return "Inalid subtype"
-
-    def change_division(self, typ, name, template):
-        typ = typ.lower()
-
-        if typ == "add":
-            return self.army.add_division(name, template)
-        elif typ == "change_template":
-            return self.army.division(self.army.change_division_template, name, template_name=template)
-
-    def change_division_detail(self, typ, name, kwargs):
-        print(kwargs)
+        return armies
 
 
 class Feature:
@@ -524,7 +544,8 @@ def country_init(name, all, test=False):
         print(country_now.change_template("add", "Deafult3", "sol 100 arch 1 cav 1"))
         print(country_now.change_division("add", "div1", "Deafult3"))
         print(country_now.return_division("division", "all", "div1"))
-        print(country_now.change_template("update", "Deafult3", "sol 10 arch 1 cav 1", sub_type="add"))
+        print(country_now.change_template("update", "Deafult3",
+                                          "sol 10 arch 1", sub_type="delete"))
         print(country_now.return_division("division", "all", "div1"))
         # print(country_now.return_priv())
         # print(country_now.update())
