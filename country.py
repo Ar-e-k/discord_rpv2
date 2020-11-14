@@ -1,5 +1,6 @@
 import csv
 import army
+import dill
 
 
 class Country:
@@ -186,7 +187,6 @@ class Country:
             return self.army.return_all()
 
     def return_division(self, typ, sub_type, name):
-        print(name)
         typ = typ.lower()
         name = name.lower()
         sub_type = sub_type.lower()
@@ -232,10 +232,11 @@ class Country:
             elif sub_type == "redo":
                 return self.army.template(self.army.update_template_redefine, name, armies=armies)
             elif sub_type == "delete":
-                print(army)
                 return self.army.template(self.army.update_template_delete, name, armies=armies)
             else:
                 return "Invalid subtype"
+        elif typ == "remove":
+            return self.army.template(self.army.remove_template, name)
 
     def change_division(self, typ, name, template):
         typ = typ.lower()
@@ -276,7 +277,7 @@ class Country:
 
         for unit in armies.keys():
             try:
-                armies[unit] = army_list[army_list.index(unit)+1]
+                armies[unit] = int(army_list[army_list.index(unit)+1])
             except ValueError:
                 rem.append(unit)
 
@@ -541,7 +542,7 @@ def country_init(name, all, test=False):
     country_now = Country(name.upper(), stability, literacy, economy, population, public)
 
     if test:
-        print(country_now.change_template("add", "Deafult3", "sol 100 arch 1 cav 1"))
+        print(country_now.change_template("add", "Deafult3", "sol100 1 cav 1"))
         print(country_now.change_division("add", "div1", "Deafult3"))
         print(country_now.return_division("division", "all", "div1"))
         print(country_now.change_template("update", "Deafult3",
@@ -553,5 +554,6 @@ def country_init(name, all, test=False):
         # print(country_now.return_priv())
         # print(country_now.change("education_spending", 10.0))
         # print(country_now.return_priv())
+        print()
 
     return country_now

@@ -20,7 +20,6 @@ class Army:
 
     def template(self, func, name, **kwargs):
         if name in self.templates.keys():
-            print(kwargs)
             return func(name=name, **kwargs)
         else:
             return "Invalid template name"
@@ -168,14 +167,17 @@ class Army:
     def update_template_redefine(self, name, armies):
         self.templates[name] = armies
         self.update_divisions(name)
-        return "Task successfull"
+        return "Template remade successfully"
 
     # @template
     def update_template_delete(self, name, armies):
         for unit in armies.keys():
-            del self.templates[name][unit]
+            try:
+                del self.templates[name][unit]
+            except KeyError:
+                pass
         self.update_divisions(name)
-        return "Task successfull"
+        return "Template modified successfully"
 
     def update_divisions(self, temp_name):
         for division, template in self.templates_divisions.items():
@@ -272,7 +274,7 @@ class Division:
         return self.over_cost+self.base_cost
 
     def return_max_cost(self):
-        self.update(force="max")
+        self.update(force="max", stability=0)
         return self.over_cost+self.base_cost
 
     def return_man(self):

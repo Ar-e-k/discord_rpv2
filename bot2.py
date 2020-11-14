@@ -3,6 +3,7 @@ from discord.ext import commands as coms
 import pickle
 import time
 import datetime
+import dill
 
 help_info = {
     "all_countries": [
@@ -143,6 +144,8 @@ async def load(ctx, name):
 @coms.has_permissions(administrator=True)
 async def save(ctx, name):
     dbfile = open('saves/'+name, 'ab')
+    for country, object in all_country.items():
+        print(country, ":", object)
     pickle.dump(all_country, dbfile)
     dbfile.close()
     await ctx.send("Game saved succesfully")
@@ -262,6 +265,8 @@ async def return_army(ctx, typ="whole", sub_type="none", *, name="none"):
         await ctx.send(all_country[checked[1]].return_army(sub_type))
     elif typ.lower() in ["division", "template"]:
         await ctx.send(all_country[checked[1]].return_division(typ, sub_type, name))
+    else:
+        await ctx.send("Invalid operation")
 
 
 @client.command()
@@ -277,7 +282,7 @@ async def change_division(ctx, typ, name, *, kwarg="all"):
     elif typ.lower() in ["reinforce_all", "reinforce"]:
         await ctx.send(all_country[checked[1]].change_division_detail(typ, name, kwarg))
     else:
-        await ctx.send("Invalid type")
+        await ctx.send("Invalid operation")
 
 
 @client.command()
@@ -288,8 +293,10 @@ async def change_template(ctx, typ, sub_type, name, *, kwarg):
     else:
         await ctx.send("You have no country")
         return None
-    if typ.lower() in ["add", "update"]:
+    if typ.lower() in ["add", "update", "remove"]:
         await ctx.send(all_country[checked[1]].change_template(typ, name, kwarg, sub_type=sub_type))
+    else:
+        await ctx.send("Invalid operation")
 ####
 
 # Mod control
@@ -375,9 +382,8 @@ async def update_all(ctx, *, country="None"):
 ####
 
 # Maintainance functions
+
 '''
-
-
 @client.event
 async def on_command_error(ctx, error):
     print(error)
@@ -404,4 +410,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.Y8L6__FGGTQQghIhY_IWu1qlG7U')
+client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.xr8etbSTZvrMZo7qaaRsNThRMKI')

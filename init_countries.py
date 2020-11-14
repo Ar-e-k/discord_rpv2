@@ -24,7 +24,7 @@ def init_countries(all, main):
     for name in all:
         if main == True:
             countries[name.lower()] = country.country_init(name, all[name], test=True)
-            break
+            return None
         countries[name.lower()] = country.country_init(name, all[name])
     return countries
 
