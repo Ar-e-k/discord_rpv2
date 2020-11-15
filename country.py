@@ -1,6 +1,5 @@
 import csv
 import army
-import dill
 
 
 class Country:
@@ -17,7 +16,7 @@ class Country:
         self.public = public
         self.spendings = {
             "total": 0,
-            "education_spending": 10000,
+            "education_spending": 0,
             "economy_spending": 0,
             "benefits_spending": 0
         }
@@ -74,6 +73,7 @@ class Country:
 
     def update(self):
         self.update_spending()
+        print(self.spendings)
 
         self.economy.update_modifier(
             self.population.return_pop("rural"),
@@ -84,6 +84,7 @@ class Country:
         )
         self.economy.apply_modifier()
         if self.economy.check_budget():
+
             mes = self.name+" is out of budget, please contact them to limit spendings or get a loan\nThey currently need " + \
                 str(self.economy.return_value())+" more money"
             self.economy.change_value(0)
@@ -91,7 +92,7 @@ class Country:
 
         self.population.update_ratio(
             self.literacy.return_value(),
-            self.army.retrun_man()
+            self.army.return_man()
         )
         self.literacy.update_modifier(
             self.spendings["education_spending"],
@@ -496,9 +497,16 @@ class Economy(Feature):
 
         self.total_income = self.modifier
 
+        print(self.total_income)
+        print("trade", int(self.trade-1)/20/5+1)
+        print("tax", self.tax*0.01)
+        print("spending", spending)
+        print("Area", float(area)*self.tier_info["cost"])
+
         self.modifier *= self.tax*0.01
         self.modifier *= int(self.trade-1)/20/5+1
         if stability < 50:
+            print(stability/50)
             self.modifier *= stability/50
 
         self.modifier -= spending

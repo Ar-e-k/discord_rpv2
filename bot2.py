@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands as coms
-import pickle
 import time
 import datetime
 import dill
@@ -129,7 +128,7 @@ async def init(ctx):
 async def load(ctx, name):
     dbfile = open('saves/'+name, 'rb')
     global all_country
-    all_country = pickle.load(dbfile)
+    all_country = dill.load(dbfile)
     dbfile.close()
     channels = get_channels(client)
     if type(channels) == str:
@@ -146,7 +145,7 @@ async def save(ctx, name):
     dbfile = open('saves/'+name, 'ab')
     for country, object in all_country.items():
         print(country, ":", object)
-    pickle.dump(all_country, dbfile)
+    dill.dump(all_country, dbfile)
     dbfile.close()
     await ctx.send("Game saved succesfully")
 ####
@@ -372,7 +371,10 @@ async def update_all(ctx, *, country="None"):
     if country == "none":
         for country in all_country.keys():
             func = all_country[country].update()
-            await runner(func, channels[str(country).lower()])
+            if func == "Task succesfull":
+                pass
+            else:
+                await runner(func, channels[str(country).lower()])
     elif country in all_country.keys():
         await runner(all_country[country].update(), channels[country])
     else:
@@ -410,4 +412,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.xr8etbSTZvrMZo7qaaRsNThRMKI')
+client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.iIXrSs5xsH0HLW2C-MfU1EA2898')
