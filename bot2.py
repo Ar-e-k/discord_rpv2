@@ -35,7 +35,7 @@ help_info = {
     ],
     "change": [
         "Change the modifiers of the country",
-        "Change the modifiers for the country.\nInput the value you want to change, and then the new values.\nYou can change the following values:\nTax_rate, Technology_spending, Building_spending, Benefits_spending, Economy_spending, Army"
+        "Change the modifiers for the country.\nInput the value you want to change, and then the new values.\nYou can change the following values:\nTax, Technology_spending, Building_spending, Benefits_spending, Economy_spending"
     ],
     "add": [
         "Add some stuff to your numerical modifiers",
@@ -57,6 +57,10 @@ help_info = {
         "Change the name of the country",
         "Input the new name of the coutnry"
     ],
+    "return_army": [
+        "Allowes to see army details",
+        "Requires noo arguments to see the whole army. Template or division can be passed as the main type to see devision or template details.\nDivisions have current cost of the divison(cost), current manpower(man), which template the division is based on(template) and all to see the full division\nTemplates have cost to see the cost of a fully reinforced division(cost), maximum manpower(man) and all to see the full template"
+    ]
 }
 
 client = coms.Bot(command_prefix="%")
@@ -219,7 +223,6 @@ async def change_name(ctx,  *, value):
         pass
     else:
         await ctx.send("You have no country")
-    value = value.lower()
     if value == str(checked[1]).lower():
         await ctx.send("Thats already your country name")
         return None
@@ -252,7 +255,7 @@ async def add(ctx, source, value=None):
     await ctx.send(all_country[checked[1]].add(source, value, add=True))
 
 
-@client.command()
+@client.command(brief=help_info["return_army"][0], description=help_info["return_army"][1])
 async def return_army(ctx, typ="whole", sub_type="none", *, name="none"):
     checked = check_country(ctx)
     if checked[0]:
@@ -296,6 +299,10 @@ async def change_template(ctx, typ, sub_type, name, *, kwarg):
         await ctx.send(all_country[checked[1]].change_template(typ, name, kwarg, sub_type=sub_type))
     else:
         await ctx.send("Invalid operation")
+
+@client.command()
+async def give_army(ctx):
+    await ctx.send("sol 0 arch 0 cav 0 art 0 con 0 bord 0 heav 0 ligh 0")
 ####
 
 # Mod control
@@ -412,4 +419,4 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('NzE5ODAyNDM0MDA3OTkwMzU1.Xt8uQQ.iIXrSs5xsH0HLW2C-MfU1EA2898')
+client.run('')

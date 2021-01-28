@@ -119,6 +119,14 @@ class Country:
         self.spendings["total"] = all
 
     def change(self, category, value, admin=False, add=False):
+        try:
+            value=value.lower()
+        except AttributeError:
+            pass
+        try:
+            value=int(value)
+        except ValueError:
+            pass
         if category in self.mod:
             pass
         elif category in self.ad_mod and admin == True:
