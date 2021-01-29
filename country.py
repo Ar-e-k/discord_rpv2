@@ -1,10 +1,18 @@
 import csv
 import army
 
-
 class Country:
 
-    def __init__(self, name, stability, literacy, economy, population, public):
+    def __init__(self, name, stability, literacy, economy, population, public, save):
+
+        self.save=save
+
+        '''print(economy)
+        print(literacy)
+        print(population)
+        print(public)
+        print(name)'''
+
         self.name = name.lower()
 
         self.army = army.Army()
@@ -30,6 +38,7 @@ class Country:
                                    "stability", "stability_tier"])
         self.economy = Economy("economy", economy[0], economy[1], economy[2], economy[3], economy[4], [
                                "budget", "economy_tier"])
+
 
         self.population.update_ratio(
             self.literacy.return_value(),
@@ -71,9 +80,24 @@ class Country:
         for i in feat.return_attributes():
             self.changes[i] = feat
 
+    def hard_save(self):
+        save={
+            'tax_rate': self.economy.tax,
+            'budget': self.economy.value,
+            'population': self.population.value,
+            'stability': self.stability.value,
+            'literacy': self.literacy.value,
+            'economy_tier': self.economy.tier,
+            'stability_mod': self.stability.tier,
+            'literacy_mod': self.literacy.tier,
+            'trade': self.economy.trade
+            }
+
+        save.update(self.public)
+        return save
+
     def update(self):
         self.update_spending()
-        print(self.spendings)
 
         self.economy.update_modifier(
             self.population.return_pop("rural"),
@@ -108,7 +132,7 @@ class Country:
         for feature in [self.population, self.literacy, self.stability]:
             feature.apply_modifier()
 
-        return "Task succesfull"
+        return "Task succesful"
 
     def update_spending(self):
         self.spendings["army"] = self.army.return_cost(self.stability.return_value())
@@ -151,7 +175,7 @@ class Country:
             self.name = value
         else:
             return "Invalid category"
-        return "Task succesfull"
+        return "Task succesful"
 
     def return_priv(self):
         all = {}
@@ -300,6 +324,8 @@ class Feature:
 
     # Initialization functions
     def __init__(self, name, value, tier, all_tiers, names):
+        self.tier=tier
+
         self.name = name
         self.value = value
 
@@ -360,7 +386,7 @@ class Feature:
     def change_tier(self, tier):
         if tier in list(self.all_tier_info.keys()):
             self.tier_info = self.all_tier_info[tier]
-            return "Task succesfull"
+            return "Task succesful"
         else:
             return "Invalid Tier/nThis is the list of possible tiers:", list(self.all_tier_info.keys())
 
@@ -373,13 +399,13 @@ class Feature:
             self.value += value
         else:
             self.value = value
-        return "Task succesfull"
+        return "Task succesful"
     ############################################################################
     # Functions for update
 
     def apply_modifier(self):
         self.value += self.modifier
-        return "Task succesfull"
+        return "Task succesful"
 
     def side_modifier(self):
         if self.modifier > 0:
@@ -460,7 +486,7 @@ class Stability(Feature):
 class Literacy(Feature):
 
     def update_modifier(self, spending, pop):
-        spending = spending/pop
+        spending = spending*2/pop
         change = -(1-spending)
         self.modifier = change/(10*self.value)
         self.modifier *= 0.01*self.tier_info["modifier"]
@@ -492,7 +518,7 @@ class Economy(Feature):
                         self.trade += value
                     else:
                         self.trade = value
-                return "Task succesfull"
+                return "Task succesful"
             else:
                 return "Input a value between between 0 and 100"
         except ValueError:
@@ -500,8 +526,12 @@ class Economy(Feature):
 
     def update_modifier(self, rural, artisan, spending, stability, area):
         self.modifier = 0
-        self.modifier += rural*self.tier_info["rural"]*0.01
-        self.modifier += artisan*self.tier_info["artisan"]*0.01
+        self.modifier += rural*self.tier_info["rural"]
+        self.modifier += artisan*self.tier_info["artisan"]
+
+        print(rural, artisan)
+
+        print(self.tier_info)
 
         self.total_income = self.modifier
 
@@ -555,15 +585,18 @@ def country_init(name, all, test=False):
     literacy = [float(all["literacy"]), all["literacy_mod"], ["tier1", "tier2"]]
     economy = [float(all["budget"]), all["economy_tier"], ["rural1", "rural2", "rural3", "rural4",
                                                            "ind1", "ind2", "ind3", "ind4", "mix1", "mix2"], float(all["tax_rate"]), float(all["trade"])]
-    country_now = Country(name.upper(), stability, literacy, economy, population, public)
+    country_now = Country(name.upper(), stability, literacy, economy, population, public, all)
 
     if test:
+        country_now.hard_save()
+        '''
         print(country_now.change_template("add", "Deafult3", "sol100 1 cav 1"))
         print(country_now.change_division("add", "div1", "Deafult3"))
         print(country_now.return_division("division", "all", "div1"))
         print(country_now.change_template("update", "Deafult3",
                                           "sol 10 arch 1", sub_type="delete"))
         print(country_now.return_division("division", "all", "div1"))
+        '''
         # print(country_now.return_priv())
         # print(country_now.update())
         # print(country_now.change("tax", 15.0))

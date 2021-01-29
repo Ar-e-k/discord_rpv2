@@ -16,6 +16,7 @@ def read_stats(main=False):
         value = list(map(str.lower, value))
         prop_value = dict(zip(heads[1:], value[1:]))
         prop_values[value[0].lower()] = prop_value
+    #print(prop_values["altafia"])
     return init_countries(prop_values, main)
 
 

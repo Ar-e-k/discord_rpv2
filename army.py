@@ -25,6 +25,10 @@ class Army:
             return "Invalid template name"
     ####
 
+    # Save
+    #def hard_save(self):
+
+
     # Returning army details
     def return_cost(self, stability):
         all = 0

@@ -3,6 +3,8 @@ from discord.ext import commands as coms
 import time
 import datetime
 import dill
+import pickle
+import country as theCountries
 
 help_info = {
     "all_countries": [
@@ -130,6 +132,7 @@ async def init(ctx):
 @client.command()
 @coms.has_permissions(administrator=True)
 async def load(ctx, name):
+    name+=".ls"
     dbfile = open('saves/'+name, 'rb')
     global all_country
     all_country = dill.load(dbfile)
@@ -146,11 +149,41 @@ async def load(ctx, name):
 @client.command()
 @coms.has_permissions(administrator=True)
 async def save(ctx, name):
+    name+=".ls"
     dbfile = open('saves/'+name, 'ab')
     for country, object in all_country.items():
         print(country, ":", object)
     dill.dump(all_country, dbfile)
     dbfile.close()
+    await ctx.send("Game saved succesfully")
+
+
+@client.command()
+@coms.has_permissions(administrator=True)
+async def hard_load(ctx, name):
+    name+=".hs"
+    countries = pickle.load(open('saves/'+name, 'rb'))
+    global all_country
+    all_country={}
+    for name, country in countries.items():
+        all_country[name]=theCountries.country_init(name, country)
+    channels = get_channels(client)
+    if type(channels) == str:
+        await ctx.send(channels)
+        del channels
+        del all_country
+    else:
+        await ctx.send("Game loaded successfully")
+
+
+@client.command()
+@coms.has_permissions(administrator=True)
+async def hard_save(ctx, name):
+    countries={}
+    for country, object in all_country.items():
+        countries[country]=object.hard_save()
+    name+=".hs"
+    pickle.dump(countries, open('saves/'+name, "wb" ))
     await ctx.send("Game saved succesfully")
 ####
 
@@ -378,7 +411,7 @@ async def update_all(ctx, *, country="None"):
     if country == "none":
         for country in all_country.keys():
             func = all_country[country].update()
-            if func == "Task succesfull":
+            if func == "Task successful":
                 pass
             else:
                 await runner(func, channels[str(country).lower()])
@@ -387,7 +420,6 @@ async def update_all(ctx, *, country="None"):
     else:
         await ctx.send("Invalid country")
         return None
-    await ctx.send("Task successfull")
 ####
 
 # Maintainance functions
@@ -419,4 +451,6 @@ async def ping(ctx):
     await ctx.send(client.latency*1000)
 ####
 
-client.run('')
+tk=tokn.token()
+
+client.run(tk)
