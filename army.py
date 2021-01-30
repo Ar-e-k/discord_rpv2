@@ -4,12 +4,18 @@ import copy
 
 class Army:
 
-    def __init__(self):
-        self.templates = {}
-
-        self.templates_divisions = {}
-
+    def __init__(self, armies=None):
         self.divisions = {}
+
+        if armies==None:
+            self.templates = {}
+            self.templates_divisions = {}
+        else:
+            self.templates=armies[0]
+            self.templates_divisions=armies[1]
+            for name, div in armies[2].items():
+                self.add_division(name, self.templates_divisions[name])
+                self.divisions[name].current_force=div
 
     # Decorators
     def division(self, func, name, **kwargs):
@@ -26,8 +32,15 @@ class Army:
     ####
 
     # Save
-    #def hard_save(self):
-
+    def hard_save(self):
+        #print(self.templates)
+        #print(self.templates_divisions)
+        divisions={}
+        for name, div in self.divisions.items():
+            divisions[name]=div.current_force
+            #print(div.current_force)
+        save=[self.templates, self.templates_divisions, divisions]
+        return save
 
     # Returning army details
     def return_cost(self, stability):

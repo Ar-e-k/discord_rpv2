@@ -5,6 +5,7 @@ import datetime
 import dill
 import pickle
 import country as theCountries
+import tokn
 
 help_info = {
     "all_countries": [
@@ -163,10 +164,13 @@ async def save(ctx, name):
 async def hard_load(ctx, name):
     name+=".hs"
     countries = pickle.load(open('saves/'+name, 'rb'))
+    print(countries["altafia"])
     global all_country
     all_country={}
     for name, country in countries.items():
-        all_country[name]=theCountries.country_init(name, country)
+        army=country[1]
+        country=country[0]
+        all_country[name]=theCountries.country_init(name, country, armies=army)
     channels = get_channels(client)
     if type(channels) == str:
         await ctx.send(channels)

@@ -3,7 +3,7 @@ import army
 
 class Country:
 
-    def __init__(self, name, stability, literacy, economy, population, public, save):
+    def __init__(self, name, stability, literacy, economy, population, public, save, armies=None):
 
         self.save=save
 
@@ -15,7 +15,7 @@ class Country:
 
         self.name = name.lower()
 
-        self.army = army.Army()
+        self.army = army.Army(armies)
         armies = {"sol": 100, "cav": 50, "arch": 40, "con": 10, "art": 0, }
         self.army.add_template("Deafult1", armies)
         armies = {"ligh": 30, "heav": 5, "bord": 50}
@@ -94,6 +94,10 @@ class Country:
             }
 
         save.update(self.public)
+
+        armies=self.army.hard_save()
+        
+        save=[save, armies]
         return save
 
     def update(self):
@@ -574,7 +578,7 @@ class Economy(Feature):
         return self.return_value()
 
 
-def country_init(name, all, test=False):
+def country_init(name, all, test=False, armies=None):
     public = {}
     for i in ["form", "capital", "culture", "area"]:
         public[i] = all[i]
@@ -585,7 +589,7 @@ def country_init(name, all, test=False):
     literacy = [float(all["literacy"]), all["literacy_mod"], ["tier1", "tier2"]]
     economy = [float(all["budget"]), all["economy_tier"], ["rural1", "rural2", "rural3", "rural4",
                                                            "ind1", "ind2", "ind3", "ind4", "mix1", "mix2"], float(all["tax_rate"]), float(all["trade"])]
-    country_now = Country(name.upper(), stability, literacy, economy, population, public, all)
+    country_now = Country(name.upper(), stability, literacy, economy, population, public, all, armies=armies)
 
     if test:
         country_now.hard_save()
