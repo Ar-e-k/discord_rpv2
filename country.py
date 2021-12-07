@@ -16,7 +16,7 @@ class Country:
         self.name = name.lower()
 
         self.army = army.Army(armies)
-        armies = {"sol": 100, "cav": 50, "arch": 40, "con": 10, "art": 0, }
+        armies = {"sol": 100, "cav": 50, "arch": 40, "con": 10, "art": 0}
         self.army.add_template("Deafult1", armies)
         armies = {"ligh": 30, "heav": 5, "bord": 50}
         self.army.add_template("Deafult2", armies)
@@ -96,7 +96,7 @@ class Country:
         save.update(self.public)
 
         armies=self.army.hard_save()
-        
+
         save=[save, armies]
         return save
 
